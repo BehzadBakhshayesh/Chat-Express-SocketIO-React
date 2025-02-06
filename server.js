@@ -22,11 +22,16 @@ app.use(cors({
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
-    console.log('a person connected', socket);
+    console.log('a person connected', socket.id);
+
+    socket.on('set username', (username) => {
+        socket.username = username;
+        console.log(`${socket.id} set username as ${username}`);
+    });
 
     socket.on('chat message', (msg) => {
-        console.log('msg recived: ' + msg);
-        io.emit('chat message', msg);
+        console.log('msg received: ' + msg);
+        io.emit('chat message', { username: socket.username, message: msg });
     });
 
     socket.on('disconnect', () => {
