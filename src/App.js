@@ -23,23 +23,8 @@ function App() {
     };
   }, [userSet, username]);
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
 
-  const setUserName = () => {
-    if (username.trim()) {
-      setUserSet(true);
-    }
-  };
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    if (message.trim()) {
-      socket.emit('chat message', message);
-      setMessage('');
-    }
-  };
 
   return (
     <div>
@@ -49,10 +34,14 @@ function App() {
           <input
             type="text"
             value={username}
-            onChange={handleUsernameChange}
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter username"
           />
-          <button onClick={setUserName}>Set Username</button>
+          <button onClick={() => {
+            if (username.trim()) {
+              setUserSet(true);
+            }
+          }}>Set Username</button>
         </div>
       ) : (
         <div>
@@ -66,7 +55,13 @@ function App() {
               ))}
             </ul>
           </div>
-          <form onSubmit={sendMessage}>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (message.trim()) {
+              socket.emit('chat message', message);
+              setMessage('');
+            }
+          }}>
             <input
               type="text"
               value={message}
